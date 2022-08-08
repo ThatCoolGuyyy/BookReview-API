@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from bookShop.models import Books, Review
 
 class BookSerializer(serializers.ModelSerializer):
