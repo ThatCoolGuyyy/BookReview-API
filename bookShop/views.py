@@ -12,11 +12,14 @@ class EditBook(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BookSerializer
 
 class CreateNewReview(generics.ListCreateAPIView):
-    lookup_field = 'pk'
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
 class EditReview(generics.RetrieveUpdateDestroyAPIView):
-    lookup_field = 'pk'
-    queryset= Review.objects.all()
-    serializer_class = BookSerializer
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    
+    # def get_queryset(self):  
+    #     review = Review.objects.get(pk=self.kwargs.get('pk', None))
+    #     movies = Review.objects.filter(review=review)
+    #     return movies
