@@ -6,7 +6,7 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Books
-        fields = "__all__"
+        fields = ['id','BookName','Author','publisher','numofPages','bookWebsite', 'reviews']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -14,4 +14,4 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = "__all__"
+        fields = ['id','Heading', 'book','description','createDate', 'reviews']
