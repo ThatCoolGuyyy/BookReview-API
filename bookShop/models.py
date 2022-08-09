@@ -1,5 +1,5 @@
-from tkinter import CASCADE
 from django.db import models
+from django.contrib.auth.models import User
 
 class Books(models.Model):
     BookName = models.CharField(max_length=150)
@@ -13,6 +13,7 @@ class Books(models.Model):
     
     
 class Review(models.Model):
+    Reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
     Heading = models.CharField(max_length=100)
     book = models.ForeignKey(Books, on_delete=models.CASCADE, related_name ="reviews")
     description = models.CharField(max_length=100)
