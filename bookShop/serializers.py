@@ -5,9 +5,10 @@ from django.contrib.auth.models import User
 class ReviewSerializer(serializers.ModelSerializer):
     Reviewer = serializers.SlugRelatedField(read_only=True,slug_field='username')
     book = serializers.SlugRelatedField(read_only=True,slug_field='BookName')
+
     class Meta:
         model = Review
-        fields = ['Heading','description','createDate', 'Reviewer', 'book']
+        fields = ['Heading','description', 'Reviewer', 'book','createDate']
 
 class BookSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
