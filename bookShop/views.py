@@ -1,14 +1,15 @@
 from xml.dom import ValidationErr
 from django.shortcuts import get_object_or_404, render
 from requests import Response
-from rest_framework import generics, viewsets
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import generics, viewsets, authentication
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.authentication import TokenAuthentication
 from bookShop.models import Books, Review
 from bookShop.serializers import BookSerializer, ReviewSerializer
 
 class CreateNewBook(generics.ListCreateAPIView):
     queryset = Books.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = BookSerializer
 
 class EditBook(generics.RetrieveUpdateDestroyAPIView):
@@ -17,39 +18,19 @@ class EditBook(generics.RetrieveUpdateDestroyAPIView):
 
 class CreateNewReview(generics.ListCreateAPIView):
     queryset = Review.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [authentication.TokenAuthentication]
     serializer_class = ReviewSerializer
 
-   
-
-
 class EditReview(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticated]
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
-    def perform_create(self, serializer):
-        pk=self.kwargs.get('pk')
-        booklist = Books.objects.get(pk=pk)
-        reviewer= self.request.user
-        reviewer_queryset = Review.objects.filter(booklist=booklist, reviewer=reviewer)
+class UserReview(generics.ListAPIView):
+    serializer_class = ReviewSerializer
 
-        if reviewer_queryset.exists:
-            raise ValidationError("You have reviewed this movie")
-        serializer.save(booklist=booklist, reviewer=reviewer)
-
-# class createNewView(viewsets.ViewSet):
+    def get_queryset(self):
+       username = self.kwargs['username']
+       return Review.objects.filter(Reviewer=username)
     
-#     def list(self, request):
-#         queryset = Review.objects.all()
-#         serializer = ReviewSerializer(queryset, many=True)
-#         return Response(serializer.data)
-
-#     def retrieve(self, request, pk=None):
-#         queryset = Review.objects.all()
-#         review = get_object_or_404(queryset, pk=pk)
-#         serializer = ReviewSerializer(review)
-#         return Response(serializer.data)
-
-#     def get_extra_actions(cls):
-#         return []
