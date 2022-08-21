@@ -17,3 +17,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         if password != password2:
             raise serializers.ValidationError({'error': 'password must be the same'})
+
+        if User.objects.filter(email=self._validated_data['email']).exists():
+            raise serializers.ValidationError({'error': "email taken"})
+
+        account=User(email=self.validated_data['email'], username=self.validated_data['username'])
+        account.set_password(password)
+        account.save()
+        
+        return account
